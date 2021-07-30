@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+import pickle
  
 pygame.init()
  
@@ -10,9 +11,12 @@ BLACK = (0, 0, 0)
 RED = (213, 50, 80)
 GREEN = (0, 255, 0)
 BLUE = (50, 153, 213)
+gray = (128, 128, 128)
  
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 400
+
+BLOCK = 50
  
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Snake Eyes')
@@ -53,6 +57,19 @@ def gameLoop():
  
     foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
     foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
+
+    def askSave():
+        ask = input("Do you want to save?\n--> ").upper()
+        if ask == "Y" or ask == "YES":
+            Save = Player(PlayerIG.name)
+            #date = time.strftime("%d %b %Y", time.localtime())
+            pickle.dump(Save, open("Save File", "wb"))
+        elif ask == "N" or ask == "NO":
+            print("Okay, maybe next time!")
+            return
+        else:
+            print("Sorry, that does not compute with me! Please try again!")
+            askSave()
  
     while not game_over:
  
@@ -100,6 +117,25 @@ def gameLoop():
         snake_List.append(snake_Head)
         if len(snake_List) > Length_of_snake:
             del snake_List[0]
+
+        if len(snake_List) > 3:
+
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (0, 0, BLOCK * 3, BLOCK))
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (0, 20, BLOCK * 3, BLOCK))
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (0, 50, BLOCK, BLOCK * 4))
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (70, 80, BLOCK, BLOCK * 4))
+            # левый нижний угольник
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (440, 450, BLOCK * 2, BLOCK))
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (380, 400, BLOCK, BLOCK))
+            # правый верхний угольник
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (370, 150, BLOCK * 2, BLOCK))
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (230, 200, BLOCK, BLOCK))
+            # правый нижний угольник
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (345, 450, BLOCK * 2, BLOCK))
+            pygame.draw.rect(SCREEN, pygame.Color('gray'), (570, 500, BLOCK, BLOCK))
+
+         
+ 
  
         for x in snake_List[:-1]:
             if x == snake_Head:
@@ -107,15 +143,37 @@ def gameLoop():
  
         our_snake(snake_block, snake_List)
         Your_score(Length_of_snake - 1)
- 
+
+
         pygame.display.flip()
  
         if x1 == foodx and y1 == foody:
             foodx = round(random.randrange(0, SCREEN_WIDTH - snake_block) / 10.0) * 10.0
             foody = round(random.randrange(0, SCREEN_HEIGHT - snake_block) / 10.0) * 10.0
             Length_of_snake += 1
+        while len(snake_List) > 3:
+            if x1 == 0 and y1 == 20:
+                game_over == True
+            if x1 == 0 and y1 == 50:
+                game_over == True
+            if x1 == 70 and y1 == 80:
+                game_over == True
+            if x1 == 440 and y1 == 450:
+                game_over == True
+            if x1 == 380 and y1 == 400:
+                game_over == True
+            if x1 == 370 and y1 == 150:
+                game_over == True
+            if x1 == 230 and y1 == 200:
+                game_over == True
+            if x1 == 345 and y1 == 450:
+                game_over == True
+            if x1 == 570 and y1 == 500:
+                game_over == True
  
         clock.tick(snake_speed)
+
+
  
     pygame.quit()
     quit()
